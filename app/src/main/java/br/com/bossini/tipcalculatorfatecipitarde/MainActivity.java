@@ -20,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView percentTextView;
     private TextView tipTextView;
     private TextView totalTextView;
+    private double billAmount = 0;
+    private double percent = 0.15;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +52,12 @@ public class MainActivity extends AppCompatActivity {
     class ObservadorDeSeekBar implements SeekBar.OnSeekBarChangeListener{
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            percent = progress / 100.0;
+            percentTextView.setText(percentFormat.format(percent));
+            double tip = billAmount * percent;
+            double totalGeral = billAmount + tip;
+            tipTextView.setText(currencyFormat.format(tip));
+            totalTextView.setText(currencyFormat.format(totalGeral));
 
         }
 
@@ -73,7 +81,19 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+            try{
+                billAmount = Double.parseDouble(s.toString()) / 100;
+                double tip = billAmount * percent;
+                double totalGeral = billAmount + tip;
+                amountTextView.setText(currencyFormat.format(billAmount));
+                tipTextView.setText(currencyFormat.format(tip));
+                totalTextView.setText(currencyFormat.format(totalGeral));
+            }
+            catch (NumberFormatException e){
+                amountTextView.setText(currencyFormat.format(0));
+                tipTextView.setText(currencyFormat.format(0));
+                totalTextView.setText(currencyFormat.format(0));
+            }
         }
 
         @Override
